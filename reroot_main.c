@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     double BestHeight = 0;
     double xcoord = 0;
     double ycoord = 0;
-    reroot(tree,&BestWidth, &BestHeight, &xcoord, &ycoord);
+    reroot(tree,&BestWidth, &BestHeight, &xcoord, &ycoord, argv[2]);
     printf("Best width: %le\n",BestWidth);
     printf("Best Height: %le\n", BestHeight);
     free(mallocSpace);

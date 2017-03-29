@@ -26,5 +26,5 @@ typedef struct _container{
 Node* Load_From_File(char* Filename, Node **mallocSpace);
 Node* Packing_Data(Node *root);
 int Save_To_File(char* Filename, Node *root);
-void reroot(Node *root,double* BestWidth, double* BestHeight, double* xcoord, double* ycoord);
+void reroot(Node *root,double* BestWidth, double* BestHeight, double* xcoord, double* ycoord, char* filename);
 #endif

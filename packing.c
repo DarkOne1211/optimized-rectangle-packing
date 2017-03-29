@@ -242,6 +242,7 @@ void postOrderReset(Node* root)
 
 Node *Packing_Data(Node *root)
 {
+    postOrderReset(root);
     postOrderPacking(root);
     if(root->orientation == 'H')
     {
@@ -350,7 +351,7 @@ Node* revertEdgeRightRight(Node* node, Node* parent)
 }*/
 //---------------------------------------------------------------------------------
 
-void checkPackingEfficiency(Node* root, double* BestWidth, double* BestHeight, double* xcoord, double* ycoord)
+void checkPackingEfficiency(Node* root, double* BestWidth, double* BestHeight, double* xcoord, double* ycoord, char* filename)
 {
     double width = *BestWidth;
     double height = *BestHeight;
@@ -361,6 +362,7 @@ void checkPackingEfficiency(Node* root, double* BestWidth, double* BestHeight, d
         *BestHeight = root->height;
         *xcoord = root->xcoord;
         *ycoord = root->ycoord;
+        Save_To_File(filename, root);
     }
 
     if(area == (root->width * root->height))
@@ -370,11 +372,12 @@ void checkPackingEfficiency(Node* root, double* BestWidth, double* BestHeight, d
             *BestWidth = root->width;
             *xcoord = root->xcoord;
             *ycoord = root->ycoord;
+            Save_To_File(filename, root);
         }
     }
 }
 
-void recursiveReroot(Node* node, Node* parent, double* BestWidth, double* BestHeight, double* xcoord, double* ycoord)
+void recursiveReroot(Node* node, Node* parent, double* BestWidth, double* BestHeight, double* xcoord, double* ycoord, char* filename)
 {
     if(node->label != 0 || node->left == NULL || node == NULL)
     {
@@ -384,24 +387,24 @@ void recursiveReroot(Node* node, Node* parent, double* BestWidth, double* BestHe
     {
         parent = changeEdgeLeftLeft(node, parent);
         Packing_Data(parent);
-        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord);
+        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord, filename);
                                             //-------------TEST-------------
                                             /*printf("After reroot\n");
                                             postOrderTraversal(parent);*/
                                             //--------------------------------
         node = parent->left;
-        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord);
+        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord, filename);
         parent = revertEdgeLeftLeft(parent->right,parent);
         node = parent->left;
         parent = changeEdgeLeftRight(node,parent);
         Packing_Data(parent);
-        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord);
+        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord,filename);
                                             //-------------TEST----------------
                                             /*printf("After reroot\n");
                                             postOrderTraversal(parent);*/
                                             //---------------------------------
         node = parent->right;
-        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord);
+        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord,filename);
         parent = revertEdgeLeftRight(parent->left,parent);
         node = node->left;
     }
@@ -409,30 +412,30 @@ void recursiveReroot(Node* node, Node* parent, double* BestWidth, double* BestHe
     {
         parent = changeEdgeRightLeft(node, parent);
         Packing_Data(parent);
-        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord);
+        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord, filename);
                                             //-------------TEST-------------
                                             /*printf("After reroot\n");
                                             postOrderTraversal(parent);*/
                                             //--------------------------------
         node = parent->left;
-        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord);
+        recursiveReroot(node,parent, BestWidth, BestHeight, xcoord, ycoord, filename);
         parent = revertEdgeRightLeft(parent->right,parent);
         node = parent->right;
         parent = changeEdgeRightRight(node,parent);
         Packing_Data(parent);
-        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord);
+        checkPackingEfficiency(parent, BestWidth, BestHeight, xcoord, ycoord, filename);
                                             //-------------TEST---------------
                                             /*printf("After reroot\n");
                                             postOrderTraversal(parent);*/
                                             //--------------------------------
         node = parent->right;
-        recursiveReroot(node,parent, BestWidth, BestHeight,xcoord, ycoord);
+        recursiveReroot(node,parent, BestWidth, BestHeight,xcoord, ycoord, filename);
         parent = revertEdgeRightRight(parent->left,parent);
         node=node->right;
     }  
 }
 
-void reroot(Node *root,double* BestWidth, double* BestHeight, double* xcoord, double* ycoord)
+void reroot(Node *root,double* BestWidth, double* BestHeight, double* xcoord, double* ycoord, char *filename)
 {
     Packing_Data(root);
     //printf("Initial Packing\n");
@@ -441,8 +444,8 @@ void reroot(Node *root,double* BestWidth, double* BestHeight, double* xcoord, do
     *BestHeight = root->height;
     *xcoord = root->xcoord;
     *ycoord = root->ycoord;
-    recursiveReroot(root->left, root, BestWidth, BestHeight, xcoord, ycoord);
-    recursiveReroot(root->right, root,BestWidth, BestHeight, xcoord, ycoord);
+    recursiveReroot(root->left, root, BestWidth, BestHeight, xcoord, ycoord, filename);
+    recursiveReroot(root->right, root,BestWidth, BestHeight, xcoord, ycoord, filename);
 }
 
 int Save_To_File(char *Filename, Node* root)
